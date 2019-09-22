@@ -1,5 +1,5 @@
 
-# ofxSoundObjects_NDI
+# ofxSoundObjects-NDI
 
 This is an additional module to be used with [ofxSoundObjects](https://github.com/roymacdonald/ofxSoundObjects/).
 

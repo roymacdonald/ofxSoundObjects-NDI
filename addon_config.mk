@@ -15,11 +15,11 @@
 # and the PG will write to the console the kind of error and in which line it is
 
 meta:
-	ADDON_NAME = ofxSoundObjects_NDI
+	ADDON_NAME = ofxSoundObjects-NDI
 	ADDON_DESCRIPTION = Additional module for ofxSoundObjects for sending audio over a network using ofxNDI
 	ADDON_AUTHOR = @roymacdonald
 	ADDON_TAGS = "ofxSoundObjects" "audio" "sound" "network" "NDI" "ofxNDI" 
-	ADDON_URL = https://github.com/roymacdonald/ofxSoundObjects_NDI
+	ADDON_URL = https://github.com/roymacdonald/ofxSoundObjects-NDI
 
 common:
 	# dependencies with other addons, a list of them separated by spaces 
