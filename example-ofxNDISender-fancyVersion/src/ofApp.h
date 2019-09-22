@@ -7,7 +7,7 @@
 #include "SineWaveGenerator.h"
 
 #include "ofxNDISoundObject.h"
-
+#include "ofxGui.h"
 class ofApp : public ofBaseApp{
 
 	public:
@@ -44,6 +44,11 @@ class ofApp : public ofBaseApp{
 	
 	// these are for drawing waves and sound levels
 	waveformDraw wave;
+	
+	/// the circularBufferWaveformDraw class  inherits form waveformDraw and it's main difference is that it uses a circular buffer
+	/// for storing the audio data. A circular buffer is just a larger buffer which reuses its memory in a "circular" manera which is more efficient that pushing and popping form an array.
+	circularBufferWaveformDraw waveCircular;
+	
 	VUMeter vuMeter;
 	
 	// Utility stuff to switch inputs
@@ -64,5 +69,26 @@ class ofApp : public ofBaseApp{
 	string helpText;
 	bool bDrawHelp = true;
 	void setHelpText();
+	
+	
+	
+	/// just a gui with some parameters to play with
+	ofxPanel gui;
+	ofParameter<float> minFreq = {"Min Freq", 20, 0, 2000};
+	ofParameter<float> maxFreq = {"Max Freq", 200, 0, 2000};
+	ofParameter<float> freqParam = {"Frequency", 20, 0, 2000};
+//	ofParameter<float> waveShapeParam = {"Wave Shape", 0.5, 0, 1};
+	ofParameter<float> amplitudeParam = {"Amplitude", 1, 0, 1 };
+	
+	ofParameter<void> setFreqToBufferSize{"Set Freq To Buffer Size"};
+	
+	
+	bool bDrawGui = true;
+	ofEventListeners listeners;
+	
+private:
+	void updateFreq();
+	
+	
 	
 };

@@ -1,4 +1,5 @@
 ofxAudioFile
+ofxGui
 ofxNDI
 ofxSoundObjects
-ofxSoundObjects_NDI
+ofxSoundObjects-NDI

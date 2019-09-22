@@ -31,6 +31,7 @@ public:
 	VUMeter vuMeter;
 	
 	waveformDraw wave;
+	circularBufferWaveformDraw waveCircular;
 	
 	void setViewports();
 	

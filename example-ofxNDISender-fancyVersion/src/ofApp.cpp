@@ -43,21 +43,73 @@ void ofApp::setup(){
 	sender.setMuteOutput(true);
 	
 	// the current sound source, which is setup in the setInput function will connect to the vuMeter, thus completing the signal chain
-	vuMeter.connectTo(wave).connectTo(sender).connectTo(output);
+	vuMeter.connectTo(waveCircular).connectTo(wave).connectTo(sender).connectTo(output);
 	
 	
     sinGen.setup(440);
 	
 	setInput(INPUT_SINE_WAVE);
 	
+	
+	/// The circularBufferWaveformDraw class needs to be set how big the circular buffer will be.
+	/// The value passed is how many buffers from the sound stream it will be able to fit.
+	waveCircular.setNumBuffers(100);
+	/// The waveform can have a grid, in this case we are going to set it to the size of the buffers received.
+	/// This is useful for visually checking what we are sending in each buffer.
+	waveCircular.setGridSpacingByNumSamples(soundSettings.bufferSize);
+	
+	
+	
+	
+	/// Just setting up the gui and its listeners
+	gui.setup();
+	gui.add(amplitudeParam);
+	gui.add(freqParam);
+	gui.add(minFreq);
+	gui.add(maxFreq);
+//	gui.add(waveShapeParam);
+	gui.add(setFreqToBufferSize);
+	
+	listeners.push(amplitudeParam.newListener([&](float&f){
+		sinGen.amplitude = f;
+	}));
+	listeners.push(freqParam.newListener([&](float&f){
+		sinGen.freq = f;
+	}));
+	listeners.push(minFreq.newListener([&](float&){
+		if(minFreq > maxFreq){
+			maxFreq = minFreq;
+			freqParam = minFreq;
+		}
+		freqParam.setMin(minFreq.get());
+	}));
+	
+	listeners.push(maxFreq.newListener([&](float&){
+		if(maxFreq < minFreq){
+			minFreq = maxFreq;
+			freqParam = maxFreq;
+		}
+		freqParam.setMax(maxFreq.get());
+	}));
+	
+//	listeners.push(waveShapeParam.newListener([&](float&f){
+//		waveShape = f;
+//	}));
+	
+	listeners.push(setFreqToBufferSize.newListener([&](){
+		freqParam = stream.getSampleRate()/ (float)stream.getBufferSize();
+	}));
+	
+	
+	setViewports();
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-	if(inputIndex == INPUT_SINE_WAVE ){
-		sinGen.freq = ofMap(ofGetMouseX(), 0, ofGetWidth(), 20, 20000);
-		sinGen.amplitude = ofMap(ofGetMouseY(), 0, ofGetWidth(), 0, 1);
-	}
+//	if(inputIndex == INPUT_SINE_WAVE ){
+//		sinGen.freq = ofMap(ofGetMouseX(), 0, ofGetWidth(), 20, 20000);
+//		sinGen.amplitude = ofMap(ofGetMouseY(), 0, ofGetWidth(), 0, 1);
+//	}
 }
 
 //--------------------------------------------------------------
@@ -65,17 +117,20 @@ void ofApp::draw(){
 	
 	ofSetBackgroundColor(60);
 	
+
+	
 	ofSetColor(ofColor::white);
 	
 	vuMeter.draw();
+	
 	wave.draw();
+	waveCircular.draw();
+	
+	if(inputIndex == INPUT_SINE_WAVE && bDrawGui) gui.draw();
 	
 	if(bDrawHelp){
-#ifdef OFX_SOUND_OBJECTS_USE_OFX_NDI
+
 		ofSetColor(40);
-#else
-		ofSetColor(ofColor::red, (unsigned char)ofMap(sin(ofGetElapsedTimef()*10), -1, 1, 50, 255));
-#endif
 
 		ofDrawRectangle(helpTextRect);
 		ofSetColor(255);
@@ -87,7 +142,6 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::setHelpText(){
 	stringstream ss;
-#ifdef OFX_SOUND_OBJECTS_USE_OFX_NDI
 	ss << "Press [key] to : " << endl;;
 	ss << "      [space]  : switch to next input ( file player/sine wave/ live mic )" << endl;;
 	ss << "      [l]      : Load an audio file to the sound player" << endl;
@@ -101,15 +155,11 @@ void ofApp::setHelpText(){
 	else if(inputIndex == INPUT_SINE_WAVE){ ss  <<  "Sine Wave Generator"; }
 	else if(inputIndex == INPUT_LIVE_MIC){  ss  <<  "Live input (mic)"; }
 	ss << endl;
+	ss << endl;
 	
-	if(inputIndex == INPUT_SINE_WAVE){
-		ss << "Move the mouse to change the sine wave parameters. x axis: frequency. y axis: volume" << endl;
-	}
-#else
-	ss << "ofxNDI use is disabled. !" <<endl <<endl;
-	ss << "Go to the file ofxSoundObjectsConstants.h \nand uncomment the line that reads //#define OFX_SOUND_OBJECTS_USE_OFX_NDI" <<endl;
-	ss << "You will also need to properly add ofxNDI to the project via Project Generator.\nRead the ofxSoundObject's readme file for more info" <<endl;
-#endif
+	ss << "Clic and drag over a waveform to move around. RightButton drag to zoom." << endl;
+	ss << "Do either while pressing the Shift key to restrict to a single dimension" <<endl;
+
 	helpText = ss.str();
 }
 
@@ -117,18 +167,25 @@ void ofApp::setHelpText(){
 void ofApp::setViewports(){
 	
 	setHelpText();
-	glm::vec3 pos (0,0,0);
+	ofRectangle prevRect (0,0,0,0);
+	
+	if(inputIndex == INPUT_SINE_WAVE && bDrawGui){
+		gui.setPosition(0,0);
+		prevRect = gui.getShape();
+	}
 	
 	if(bDrawHelp){
 		ofBitmapFont bf;
 		auto bb = bf.getBoundingBox(helpText, 20, 20);
-		helpTextRect.set(pos.x, 0, ofGetWidth() - pos.x, bb.getMaxY() + 10);
-		pos = helpTextRect.getBottomLeft();
+		helpTextRect.set(prevRect.getMaxX(), 0, ofGetWidth() - prevRect.getMaxX(), bb.getMaxY() + 10);
+		prevRect = helpTextRect;
 	}
 	
-	ofRectangle vuRect(pos, 40, ofGetHeight() - pos.y);
+	ofRectangle vuRect(0, prevRect.getMaxY(), 40, ofGetHeight() - prevRect.getMaxY());
 	
-	wave.setup({vuRect.getTopRight(), ofGetWidth() - vuRect.getMaxX(), (float)ofGetHeight() - pos.y});
+	wave.setup({vuRect.getTopRight(), ofGetWidth() - vuRect.getMaxX(), vuRect.height*0.5f});
+	
+	waveCircular.setup({wave.getBottomLeft(), wave.width, wave.height});
 	
 	vuMeter.setup(vuRect,VUMeter::VU_DRAW_VERTICAL,VUMeter::VU_STACK_VERTICAL);
 	
@@ -163,11 +220,14 @@ void ofApp::keyPressed(int key){
 		loadDialogPlayer();
 	}else if(key == 'm'){
 		sender.setMuteOutput(!sender.isMuteOutput());
+	}else if(key == 'g'){
+		if(inputIndex == INPUT_SINE_WAVE){
+			bDrawGui ^= true;
+		}
 	}else if(key == 'h'){
 		bDrawHelp ^= true;
 		setViewports();
 	}
-
 	
 }
 //--------------------------------------------------------------

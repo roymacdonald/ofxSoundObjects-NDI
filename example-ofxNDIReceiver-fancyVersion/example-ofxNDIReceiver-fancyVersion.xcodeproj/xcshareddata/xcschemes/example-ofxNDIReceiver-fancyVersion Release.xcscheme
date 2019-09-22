@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
-               BuildableName = "example-ofxNDISender.app"
-               BlueprintName = "example-ofxNDISender"
-               ReferencedContainer = "container:example-ofxNDISender.xcodeproj">
+               BuildableName = "example-ofxNDIReceiver-fancyVersion.app"
+               BlueprintName = "example-ofxNDIReceiver-fancyVersion"
+               ReferencedContainer = "container:example-ofxNDIReceiver-fancyVersion.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
-            BuildableName = "example-ofxNDISender.app"
-            BlueprintName = "example-ofxNDISender"
-            ReferencedContainer = "container:example-ofxNDISender.xcodeproj">
+            BuildableName = "example-ofxNDIReceiver-fancyVersion.app"
+            BlueprintName = "example-ofxNDIReceiver-fancyVersion"
+            ReferencedContainer = "container:example-ofxNDIReceiver-fancyVersion.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
    </TestAction>
@@ -52,9 +52,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
-            BuildableName = "example-ofxNDISender.app"
-            BlueprintName = "example-ofxNDISender"
-            ReferencedContainer = "container:example-ofxNDISender.xcodeproj">
+            BuildableName = "example-ofxNDIReceiver-fancyVersion.app"
+            BlueprintName = "example-ofxNDIReceiver-fancyVersion"
+            ReferencedContainer = "container:example-ofxNDIReceiver-fancyVersion.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -70,9 +70,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "E4B69B5A0A3A1756003C02F2"
-            BuildableName = "example-ofxNDISender.app"
-            BlueprintName = "example-ofxNDISender"
-            ReferencedContainer = "container:example-ofxNDISender.xcodeproj">
+            BuildableName = "example-ofxNDIReceiver-fancyVersion.app"
+            BlueprintName = "example-ofxNDIReceiver-fancyVersion"
+            ReferencedContainer = "container:example-ofxNDIReceiver-fancyVersion.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

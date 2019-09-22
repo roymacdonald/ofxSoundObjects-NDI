@@ -9,7 +9,7 @@
 		<string>46</string>
 		<key>objects</key>
 		<dict>
-			<key>A9BC2960996099A90F4954C7</key>
+			<key>28601C713A11B59BF6E0A445</key>
 			<dict>
 				<key>explicitFileType</key>
 				<string>sourcecode.c.h</string>
@@ -20,16 +20,16 @@
 				<key>name</key>
 				<string>ofxNDISoundObject.h</string>
 				<key>path</key>
-				<string>../../../addons/ofxSoundObjects_NDI/src/ofxNDISoundObject.h</string>
+				<string>../../../addons/ofxSoundObjects-NDI/src/ofxNDISoundObject.h</string>
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
-			<key>847F8E08F07FE7ACA65ECEBB</key>
+			<key>71DEE2EEE30B0E7F3E41E0B5</key>
 			<dict>
 				<key>children</key>
 				<array>
-					<string>83B7035197F3217FB4C7350C</string>
-					<string>A9BC2960996099A90F4954C7</string>
+					<string>8B61B9F71F828D52D1C16534</string>
+					<string>28601C713A11B59BF6E0A445</string>
 				</array>
 				<key>isa</key>
 				<string>PBXGroup</string>
@@ -38,27 +38,27 @@
 				<key>sourceTree</key>
 				<string>&lt;group&gt;</string>
 			</dict>
-			<key>24137B396391405055F36713</key>
+			<key>408DF5818B1709A3BD78A2D5</key>
 			<dict>
 				<key>children</key>
 				<array>
-					<string>847F8E08F07FE7ACA65ECEBB</string>
+					<string>71DEE2EEE30B0E7F3E41E0B5</string>
 				</array>
 				<key>isa</key>
 				<string>PBXGroup</string>
 				<key>name</key>
-				<string>ofxSoundObjects_NDI</string>
+				<string>ofxSoundObjects-NDI</string>
 				<key>sourceTree</key>
 				<string>&lt;group&gt;</string>
 			</dict>
-			<key>EEE8C274B5B567C9E7EFF9CA</key>
+			<key>ED540D12D3AA01CB32F8CFAB</key>
 			<dict>
 				<key>fileRef</key>
-				<string>83B7035197F3217FB4C7350C</string>
+				<string>8B61B9F71F828D52D1C16534</string>
 				<key>isa</key>
 				<string>PBXBuildFile</string>
 			</dict>
-			<key>83B7035197F3217FB4C7350C</key>
+			<key>8B61B9F71F828D52D1C16534</key>
 			<dict>
 				<key>explicitFileType</key>
 				<string>sourcecode.cpp.cpp</string>
@@ -69,7 +69,7 @@
 				<key>name</key>
 				<string>ofxNDISoundObject.cpp</string>
 				<key>path</key>
-				<string>../../../addons/ofxSoundObjects_NDI/src/ofxNDISoundObject.cpp</string>
+				<string>../../../addons/ofxSoundObjects-NDI/src/ofxNDISoundObject.cpp</string>
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
@@ -414,6 +414,28 @@
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
+			<key>A06A9F81C3B83D8FDD59C0C8</key>
+			<dict>
+				<key>fileRef</key>
+				<string>CB0E65868B71BE8879F04AB5</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>CB0E65868B71BE8879F04AB5</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>waveformDraw.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/SoundObjects/waveformDraw.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
 			<key>540EDF6E2F1CA24B5211673F</key>
 			<dict>
 				<key>explicitFileType</key>
@@ -506,6 +528,7 @@
 					<string>7E5FAD2B1CAA506583AF8584</string>
 					<string>91B7BCA1CD2E2C5F1B776324</string>
 					<string>540EDF6E2F1CA24B5211673F</string>
+					<string>CB0E65868B71BE8879F04AB5</string>
 					<string>486582E0863B80FABE19AA90</string>
 				</array>
 				<key>isa</key>
@@ -634,10 +657,49 @@
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
+			<key>6DC40DD805B8D7BBA677A14C</key>
+			<dict>
+				<key>fileRef</key>
+				<string>44FF76267C6B169C837295F7</string>
+				<key>isa</key>
+				<string>PBXBuildFile</string>
+			</dict>
+			<key>44FF76267C6B169C837295F7</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.cpp.cpp</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofxSlidersGrid.cpp</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/Renderers/ofxSlidersGrid.cpp</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
+			<key>39140C5962784444DA3091CE</key>
+			<dict>
+				<key>explicitFileType</key>
+				<string>sourcecode.c.h</string>
+				<key>fileEncoding</key>
+				<string>4</string>
+				<key>isa</key>
+				<string>PBXFileReference</string>
+				<key>name</key>
+				<string>ofx2DCanvas.h</string>
+				<key>path</key>
+				<string>../../../addons/ofxSoundObjects/src/Renderers/ofx2DCanvas.h</string>
+				<key>sourceTree</key>
+				<string>SOURCE_ROOT</string>
+			</dict>
 			<key>E4C2833BEB24063CF3644AD9</key>
 			<dict>
 				<key>children</key>
 				<array>
+					<string>67FD96F7C241D53BFCF35195</string>
+					<string>39140C5962784444DA3091CE</string>
 					<string>44FF76267C6B169C837295F7</string>
 					<string>20FBE1E214C2DC0FEEFC1973</string>
 					<string>FCE5CA29FCA21152CFEA85AE</string>
@@ -698,14 +760,14 @@
 				<key>sourceTree</key>
 				<string>&lt;group&gt;</string>
 			</dict>
-			<key>6DC40DD805B8D7BBA677A14C</key>
+			<key>242FC6168D4E123D99060E53</key>
 			<dict>
 				<key>fileRef</key>
-				<string>44FF76267C6B169C837295F7</string>
+				<string>67FD96F7C241D53BFCF35195</string>
 				<key>isa</key>
 				<string>PBXBuildFile</string>
 			</dict>
-			<key>44FF76267C6B169C837295F7</key>
+			<key>67FD96F7C241D53BFCF35195</key>
 			<dict>
 				<key>explicitFileType</key>
 				<string>sourcecode.cpp.cpp</string>
@@ -714,9 +776,9 @@
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>name</key>
-				<string>ofxSlidersGrid.cpp</string>
+				<string>ofx2DCanvas.cpp</string>
 				<key>path</key>
-				<string>../../../addons/ofxSoundObjects/src/Renderers/ofxSlidersGrid.cpp</string>
+				<string>../../../addons/ofxSoundObjects/src/Renderers/ofx2DCanvas.cpp</string>
 				<key>sourceTree</key>
 				<string>SOURCE_ROOT</string>
 			</dict>
@@ -1683,7 +1745,7 @@ fi
 						<string>../../../addons/ofxSoundObjects/src</string>
 						<string>../../../addons/ofxSoundObjects/src/SoundObjects</string>
 						<string>../../../addons/ofxSoundObjects/src/Renderers</string>
-						<string>../../../addons/ofxSoundObjects_NDI/src</string>
+						<string>../../../addons/ofxSoundObjects-NDI/src</string>
 					</array>
 					<key>MACOSX_DEPLOYMENT_TARGET</key>
 					<string>10.9</string>
@@ -1733,7 +1795,7 @@ fi
 						<string>../../../addons/ofxSoundObjects/src</string>
 						<string>../../../addons/ofxSoundObjects/src/SoundObjects</string>
 						<string>../../../addons/ofxSoundObjects/src/Renderers</string>
-						<string>../../../addons/ofxSoundObjects_NDI/src</string>
+						<string>../../../addons/ofxSoundObjects-NDI/src</string>
 					</array>
 					<key>ICON</key>
 					<string>$(ICON_NAME_RELEASE)</string>
@@ -1777,7 +1839,7 @@ fi
 					<string>D8D8E0F43C631167E024126A</string>
 					<string>34159355A5E930002AC9132E</string>
 					<string>41B26342D97D99EEEB93B344</string>
-					<string>24137B396391405055F36713</string>
+					<string>408DF5818B1709A3BD78A2D5</string>
 				</array>
 				<key>isa</key>
 				<string>PBXGroup</string>
@@ -4552,7 +4614,7 @@ fi
 						<string>../../../addons/ofxSoundObjects/src</string>
 						<string>../../../addons/ofxSoundObjects/src/SoundObjects</string>
 						<string>../../../addons/ofxSoundObjects/src/Renderers</string>
-						<string>../../../addons/ofxSoundObjects_NDI/src</string>
+						<string>../../../addons/ofxSoundObjects-NDI/src</string>
 					</array>
 					<key>MACOSX_DEPLOYMENT_TARGET</key>
 					<string>10.9</string>
@@ -4622,7 +4684,7 @@ fi
 						<string>../../../addons/ofxSoundObjects/src</string>
 						<string>../../../addons/ofxSoundObjects/src/SoundObjects</string>
 						<string>../../../addons/ofxSoundObjects/src/Renderers</string>
-						<string>../../../addons/ofxSoundObjects_NDI/src</string>
+						<string>../../../addons/ofxSoundObjects-NDI/src</string>
 					</array>
 					<key>MACOSX_DEPLOYMENT_TARGET</key>
 					<string>10.9</string>
@@ -4656,10 +4718,12 @@ fi
 					<string>9E711A648739952859F3FAEB</string>
 					<string>68A19D836E5BA0ED60A3DE5B</string>
 					<string>222937AE58FD5FB49FAABDE8</string>
+					<string>242FC6168D4E123D99060E53</string>
 					<string>6DC40DD805B8D7BBA677A14C</string>
 					<string>D62F3E04A5125DF78F8859B1</string>
 					<string>12CEE754929E8DB692B2BBE6</string>
 					<string>0BE96166ED40A5D4B27C9C7E</string>
+					<string>A06A9F81C3B83D8FDD59C0C8</string>
 					<string>BBD9844681A294B282AAB320</string>
 					<string>0C038942B6A701062B7B70F2</string>
 					<string>7840F332D7330DAAD11D2250</string>
@@ -4668,7 +4732,7 @@ fi
 					<string>7CAF1A5AEF6F06B39340FF34</string>
 					<string>A951B37B85BE9D9E912D0BD3</string>
 					<string>4D112DC30F41BF74A9CA4C79</string>
-					<string>EEE8C274B5B567C9E7EFF9CA</string>
+					<string>ED540D12D3AA01CB32F8CFAB</string>
 				</array>
 				<key>isa</key>
 				<string>PBXSourcesBuildPhase</string>
@@ -4709,7 +4773,7 @@ fi
 				<key>isa</key>
 				<string>PBXNativeTarget</string>
 				<key>name</key>
-				<string>example-ofxNDISender</string>
+				<string>example-ofxNDIReceiver-fancyVersion</string>
 				<key>productName</key>
 				<string>myOFApp</string>
 				<key>productReference</key>
@@ -4726,7 +4790,7 @@ fi
 				<key>isa</key>
 				<string>PBXFileReference</string>
 				<key>path</key>
-				<string>example-ofxNDISenderDebug.app</string>
+				<string>example-ofxNDIReceiver-fancyVersionDebug.app</string>
 				<key>sourceTree</key>
 				<string>BUILT_PRODUCTS_DIR</string>
 			</dict>
@@ -4778,7 +4842,7 @@ fi
 						<string>../../../addons/ofxSoundObjects/src</string>
 						<string>../../../addons/ofxSoundObjects/src/SoundObjects</string>
 						<string>../../../addons/ofxSoundObjects/src/Renderers</string>
-						<string>../../../addons/ofxSoundObjects_NDI/src</string>
+						<string>../../../addons/ofxSoundObjects-NDI/src</string>
 					</array>
 					<key>ICON</key>
 					<string>$(ICON_NAME_DEBUG)</string>
@@ -4844,7 +4908,7 @@ fi
 						<string>../../../addons/ofxSoundObjects/src</string>
 						<string>../../../addons/ofxSoundObjects/src/SoundObjects</string>
 						<string>../../../addons/ofxSoundObjects/src/Renderers</string>
-						<string>../../../addons/ofxSoundObjects_NDI/src</string>
+						<string>../../../addons/ofxSoundObjects-NDI/src</string>
 					</array>
 					<key>ICON</key>
 					<string>$(ICON_NAME_RELEASE)</string>
