@@ -22,13 +22,14 @@ public:
 	
 	void setup(const std::string& name, const std::string &group="");
 	
-	virtual void process(ofSoundBuffer &input, ofSoundBuffer &output) override;
-	
 	virtual size_t getNumChannels() override;
 	void setNumChannels(const size_t& channels);
 	
 	void setMuteOutput(bool bMute);
 	bool isMuteOutput();
+	
+	
+	virtual void audioOut(ofSoundBuffer &output) override;
 	
 private:
 
@@ -38,7 +39,7 @@ private:
 	std::atomic<bool> bMute;
 	
 	size_t numChannels = 0;
-	
+	ofSoundBuffer workingBuffer;
 };
 
 
@@ -53,7 +54,6 @@ public:
 			   ofxNDI::Location location= ofxNDI::Location::BOTH,
 			   const std::vector<std::string> extra_ips={});
 
-	virtual void process(ofSoundBuffer &input, ofSoundBuffer &output) override;
 	
 	std::string getSourceName();
 	std::string getSourceUrl();
@@ -63,6 +63,8 @@ public:
 	void setNumChannels(const size_t& channels);
 	
 	
+	virtual void audioOut(ofSoundBuffer &output) override;
+	
 private:
 
 	ofxNDIReceiver receiver_;
@@ -71,6 +73,9 @@ private:
 	bool bAudioNeedsSetup = false;
 
 	size_t numChannels = 0;
+	
+	ofSoundBuffer workingBuffer;
+	
 };
 
 

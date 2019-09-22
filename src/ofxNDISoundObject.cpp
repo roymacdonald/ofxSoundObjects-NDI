@@ -22,19 +22,7 @@ void ofxNDISenderSoundObject::setup(const std::string& name, const std::string &
 		ofLogError("NDISenderObject::setup") << "NDI setup failed.";
 	}
 }
-//--------------------------------------------------------------------------
-void ofxNDISenderSoundObject::process(ofSoundBuffer &input, ofSoundBuffer &output){
-	if(bMute){
-		output.set(0);
-	}else{
-		output = input;
-	}
 
-	if(sender_.isSetup()){
-		audio_.send(input);
-	}
-
-}
 //--------------------------------------------------------------------------
 void ofxNDISenderSoundObject::setMuteOutput(bool bMute){
 	this->bMute = bMute;
@@ -51,6 +39,30 @@ size_t ofxNDISenderSoundObject::getNumChannels(){
 void ofxNDISenderSoundObject::setNumChannels(const size_t& channels){
 	numChannels = channels;
 }
+//--------------------------------------------------------------------------
+void ofxNDISenderSoundObject::audioOut(ofSoundBuffer &output) {
+	
+	if(numChannels == 0) numChannels = output.getNumChannels();
+	
+	workingBuffer.allocate(output.getNumFrames(), numChannels);
+	workingBuffer.setSampleRate(output.getSampleRate());
+	workingBuffer.setTickCount(output.getTickCount());
+	workingBuffer.setDeviceID(output.getDeviceID());
+	
+	if(inputObject!=nullptr) {
+		inputObject->audioOut(workingBuffer);
+	}
+	if(sender_.isSetup()){
+		audio_.send(workingBuffer);
+	}
+	if(bMute){
+		output.set(0);
+	}else{
+		workingBuffer.copyTo(output);
+	}
+}
+
+
 //--------------------------------------------------------------------------
 //---------- NDI RECEIVER
 //--------------------------------------------------------------------------
@@ -83,8 +95,8 @@ void ofxNDIReceiverSoundObject::setup(const std::string& name_or_url, const std:
 }
 
 //--------------------------------------------------------------------------
-void ofxNDIReceiverSoundObject::process(ofSoundBuffer &input, ofSoundBuffer &output){
-	if(receiver_.isSetup()){
+void ofxNDIReceiverSoundObject::audioOut(ofSoundBuffer &output) {
+	if(isConnected()){
 		if(bAudioNeedsSetup){
 			bAudioNeedsSetup = false;
 			audio_.setup(receiver_);
@@ -92,13 +104,28 @@ void ofxNDIReceiverSoundObject::process(ofSoundBuffer &input, ofSoundBuffer &out
 			audio_.setNumChannels(numChannels);
 			audio_.setNumSamples(output.getNumFrames());
 		}
-		if(numChannels != output.getNumChannels()){
-			output.setNumChannels(numChannels);
+		if(numChannels == 0) {
+			numChannels = output.getNumChannels();
 		}
+		
+		if(numChannels != output.getNumChannels() ||
+		   output.getNumChannels() != workingBuffer.getNumChannels() ||
+		   numChannels != workingBuffer.getNumChannels()
+		   ){
+			
+			workingBuffer.allocate(output.getNumFrames(), numChannels);
+			workingBuffer.setSampleRate(output.getSampleRate());
+			workingBuffer.setTickCount(output.getTickCount());
+			workingBuffer.setDeviceID(output.getDeviceID());
+		}
+		
 		if(receiver_.isConnected()) {
 			audio_.update();
 			if(audio_.isFrameNew()) {
-				audio_.decodeTo(output);
+				audio_.decodeTo(workingBuffer);
+				workingBuffer.copyTo(output);
+			}else{
+				output.set(0);
 			}
 		}
 	}else
