@@ -48,15 +48,25 @@ class ofxNDIReceiverSoundObject : public ofxSoundObject{
 
 public:
 	ofxNDIReceiverSoundObject():ofxSoundObject(OFX_SOUND_OBJECT_SOURCE){}
-	void setup(const std::string& name_or_url,
-			   const std::string &group="",
-			   uint32_t waittime_ms=1000,
-			   ofxNDI::Location location= ofxNDI::Location::BOTH,
-			   const std::vector<std::string> extra_ips={});
+	
+	static ofxNDI::Source findSource(const std::string& name_or_url,
+	const std::string &group="",
+	uint32_t waittime_ms=1000,
+	ofxNDI::Location location= ofxNDI::Location::BOTH,
+	const std::vector<std::string> extra_ips={});
 
 	
-	std::string getSourceName();
-	std::string getSourceUrl();
+	void setup(int sourceIndex = 0, const ofxNDI::Recv::Receiver::Settings &settings = ofxNDI::Recv::Receiver::Settings());
+	
+	
+	void setup(const std::string& name_or_url,
+			   const std::string &group="", const ofxNDI::Recv::Receiver::Settings &settings = ofxNDI::Recv::Receiver::Settings());
+	
+	void setup(const ofxNDI::Source &source, const ofxNDI::Recv::Receiver::Settings &settings = ofxNDI::Recv::Receiver::Settings());
+	
+	
+	const std::string& getSourceName();
+	const std::string& getSourceUrl();
 	bool isConnected();
 	
 	virtual size_t getNumChannels() override;
@@ -65,10 +75,17 @@ public:
 	
 	virtual void audioOut(ofSoundBuffer &output) override;
 	
-private:
+	
+		  ofxNDIReceiver& getOfxNDIReceiver();
+	const ofxNDIReceiver& getOfxNDIReceiver() const;
 
+		  ofxNDIRecvAudioFrameSync& getOfxNDIAudioFrame();
+	const ofxNDIRecvAudioFrameSync& getOfxNDIAudioFrame() const;
+	
+private:
 	ofxNDIReceiver receiver_;
 	ofxNDIRecvAudioFrameSync audio_;
+	
 	ofxNDI::Source source;
 	bool bAudioNeedsSetup = false;
 

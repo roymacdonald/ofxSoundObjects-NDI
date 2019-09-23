@@ -66,13 +66,14 @@ void ofxNDISenderSoundObject::audioOut(ofSoundBuffer &output) {
 //--------------------------------------------------------------------------
 //---------- NDI RECEIVER
 //--------------------------------------------------------------------------
-void ofxNDIReceiverSoundObject::setup(const std::string& name_or_url, const std::string &group,uint32_t waittime_ms,ofxNDI::Location location, const std::vector<std::string> extra_ips){
+
+ofxNDI::Source ofxNDIReceiverSoundObject::findSource(const std::string& name_or_url, const std::string &group,uint32_t waittime_ms,ofxNDI::Location location, const std::vector<std::string> extra_ips){
 	
 	bool bFound = false;
 	
-	if(name_or_url == "") {
-		bFound = false;
-	}else{
+	ofxNDI::Source source;
+	
+	if(name_or_url != "") {
 		auto sources = ofxNDI::listSources(waittime_ms, location, group, extra_ips);
 		
 		auto found = find_if(begin(sources), end(sources), [name_or_url](const ofxNDI::Source &s) {
@@ -81,17 +82,33 @@ void ofxNDIReceiverSoundObject::setup(const std::string& name_or_url, const std:
 		
 		if(found == end(sources)) {
 			ofLogWarning("ofxNDI") << "no NDI source found by string:" << name_or_url;
-			bFound = false;
 		}else{
 			source = *found;
-			bFound = true;
 		}
 	}
-	if(bFound){
-		bAudioNeedsSetup = receiver_.setup(source);
-	}else{
-		bAudioNeedsSetup = receiver_.setup();
+	return source;
+}
+//--------------------------------------------------------------------------
+void ofxNDIReceiverSoundObject::setup(int sourceIndex, const ofxNDI::Recv::Receiver::Settings &settings){
+	bAudioNeedsSetup =false;
+	if(receiver_.setup(sourceIndex, settings)){
+		this->source = source;
+		bAudioNeedsSetup = true;
 	}
+}
+//--------------------------------------------------------------------------
+void ofxNDIReceiverSoundObject::setup(const ofxNDI::Source &source, const ofxNDI::Recv::Receiver::Settings &settings){
+	bAudioNeedsSetup =false;
+	if(source.p_ndi_name.empty() && source.p_url_address.empty()){
+		setup(0, settings);
+	}else if(receiver_.setup(source, settings)){
+		this->source = source;
+		bAudioNeedsSetup = true;
+	}
+}
+//--------------------------------------------------------------------------
+void ofxNDIReceiverSoundObject::setup(const std::string& name_or_url, const std::string &group, const ofxNDI::Recv::Receiver::Settings &settings){
+	setup(findSource(name_or_url, group), settings);
 }
 
 //--------------------------------------------------------------------------
@@ -139,11 +156,11 @@ bool ofxNDIReceiverSoundObject::isConnected(){
 	return receiver_.isConnected();
 }
 //--------------------------------------------------------------------------
-std::string ofxNDIReceiverSoundObject::getSourceName(){
+const std::string& ofxNDIReceiverSoundObject::getSourceName(){
 	return source.p_ndi_name;
 }
 //--------------------------------------------------------------------------
-std::string ofxNDIReceiverSoundObject::getSourceUrl(){
+const std::string& ofxNDIReceiverSoundObject::getSourceUrl(){
 	return source.p_url_address;
 }
 //--------------------------------------------------------------------------
@@ -155,3 +172,21 @@ void ofxNDIReceiverSoundObject::setNumChannels(const size_t& channels){
 	numChannels = channels;
 }
 //--------------------------------------------------------------------------
+ofxNDIReceiver& ofxNDIReceiverSoundObject::getOfxNDIReceiver(){
+	return receiver_;
+}
+//--------------------------------------------------------------------------
+const ofxNDIReceiver& ofxNDIReceiverSoundObject::getOfxNDIReceiver() const{
+	return receiver_;
+}
+//--------------------------------------------------------------------------
+ofxNDIRecvAudioFrameSync& ofxNDIReceiverSoundObject::getOfxNDIAudioFrame(){
+	return audio_;
+}
+//--------------------------------------------------------------------------
+const ofxNDIRecvAudioFrameSync& ofxNDIReceiverSoundObject::getOfxNDIAudioFrame() const{
+	return audio_;
+}
+
+
+
