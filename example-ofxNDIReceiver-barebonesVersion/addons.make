@@ -1,0 +1,4 @@
+ofxAudioFile
+ofxNDI
+ofxSoundObjects
+ofxSoundObjects-NDI
