@@ -89,26 +89,34 @@ ofxNDI::Source ofxNDIReceiverSoundObject::findSource(const std::string& name_or_
 	return source;
 }
 //--------------------------------------------------------------------------
-void ofxNDIReceiverSoundObject::setup(int sourceIndex, const ofxNDI::Recv::Receiver::Settings &settings){
+void ofxNDIReceiverSoundObject::setup(int sourceIndex, std::string receiverName, NDIlib_recv_bandwidth_e bandwidth){
 	bAudioNeedsSetup =false;
+	ofxNDI::Recv::Receiver::Settings settings;
+	settings.name = receiverName;
+	settings.bandwidth = bandwidth;
 	if(receiver_.setup(sourceIndex, settings)){
 		this->source = source;
 		bAudioNeedsSetup = true;
 	}
 }
 //--------------------------------------------------------------------------
-void ofxNDIReceiverSoundObject::setup(const ofxNDI::Source &source, const ofxNDI::Recv::Receiver::Settings &settings){
+void ofxNDIReceiverSoundObject::setup(const ofxNDI::Source &source, std::string receiverName, NDIlib_recv_bandwidth_e bandwidth){
 	bAudioNeedsSetup =false;
 	if(source.p_ndi_name.empty() && source.p_url_address.empty()){
-		setup(0, settings);
-	}else if(receiver_.setup(source, settings)){
-		this->source = source;
-		bAudioNeedsSetup = true;
+		setup(0, receiverName, bandwidth);
+	}else{
+		ofxNDI::Recv::Receiver::Settings settings;
+		settings.name = receiverName;
+		settings.bandwidth = bandwidth;
+		if(receiver_.setup(source, settings)){
+			this->source = source;
+			bAudioNeedsSetup = true;
+		}
 	}
 }
 //--------------------------------------------------------------------------
-void ofxNDIReceiverSoundObject::setup(const std::string& name_or_url, const std::string &group, const ofxNDI::Recv::Receiver::Settings &settings){
-	setup(findSource(name_or_url, group), settings);
+void ofxNDIReceiverSoundObject::setup(const std::string& name_or_url, const std::string &group, std::string receiverName, NDIlib_recv_bandwidth_e bandwidth){
+	setup(findSource(name_or_url, group), receiverName, bandwidth);
 }
 
 //--------------------------------------------------------------------------

@@ -56,13 +56,21 @@ public:
 	const std::vector<std::string> extra_ips={});
 
 	
-	void setup(int sourceIndex = 0, const ofxNDI::Recv::Receiver::Settings &settings = ofxNDI::Recv::Receiver::Settings());
+	/// The following setup functions all receive as last parameter the bandwith setting. You can choose any of the following values.
+	////
+	///	NDIlib_recv_bandwidth_metadata_only  // Receive metadata.
+	///	NDIlib_recv_bandwidth_audio_only     // Receive metadata, audio.
+	///	NDIlib_recv_bandwidth_lowest         // Receive metadata, audio, video at a lower bandwidth and resolution.
+	///	NDIlib_recv_bandwidth_highest        // Receive metadata, audio, video at full resolution.
+
+	
+	void setup(int sourceIndex = 0, std::string receiverName="", NDIlib_recv_bandwidth_e bandwidth=NDIlib_recv_bandwidth_highest);
 	
 	
 	void setup(const std::string& name_or_url,
-			   const std::string &group="", const ofxNDI::Recv::Receiver::Settings &settings = ofxNDI::Recv::Receiver::Settings());
+			   const std::string &group="", std::string receiverName="", NDIlib_recv_bandwidth_e bandwidth = NDIlib_recv_bandwidth_highest);
 	
-	void setup(const ofxNDI::Source &source, const ofxNDI::Recv::Receiver::Settings &settings = ofxNDI::Recv::Receiver::Settings());
+	void setup(const ofxNDI::Source &source, std::string receiverName="", NDIlib_recv_bandwidth_e bandwidth = NDIlib_recv_bandwidth_highest);
 	
 	
 	const std::string& getSourceName();
