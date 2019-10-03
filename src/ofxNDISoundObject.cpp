@@ -76,8 +76,14 @@ ofxNDI::Source ofxNDIReceiverSoundObject::findSource(const std::string& name_or_
 	if(name_or_url != "") {
 		auto sources = ofxNDI::listSources(waittime_ms, location, group, extra_ips);
 		
-		auto found = find_if(begin(sources), end(sources), [name_or_url](const ofxNDI::Source &s) {
-			return ofIsStringInString(s.p_ndi_name, name_or_url) || ofIsStringInString(s.p_url_address, name_or_url);
+		auto split_n_u = ofSplitString(name_or_url, ":");
+		
+		auto found = find_if(begin(sources), end(sources), [name_or_url, split_n_u](const ofxNDI::Source &s) {
+			auto split = ofSplitString(s.p_url_address, ":");
+			
+			return ofIsStringInString(s.p_ndi_name, name_or_url) ||
+			( s.p_url_address == name_or_url ) ||
+			(split.size() > 1 && split_n_u.size() > 1 && split[0] == split_n_u[0] && ( split_n_u[0].empty() || (split[1] == split_n_u[1]) ) );
 		});
 		
 		if(found == end(sources)) {
