@@ -44,8 +44,13 @@ void ofxNDISenderSoundObject::audioOut(ofSoundBuffer &output) {
 	
 	if(numChannels == 0) numChannels = output.getNumChannels();
 	
-	workingBuffer.allocate(output.getNumFrames(), numChannels);
-	workingBuffer.setSampleRate(output.getSampleRate());
+	if(numChannels != workingBuffer.getNumChannels() ||
+	   workingBuffer.getNumFrames() != output.getNumFrames()||
+	   workingBuffer.getSampleRate() != output.getSampleRate()){
+		
+		workingBuffer.allocate(output.getNumFrames(), numChannels);
+		workingBuffer.setSampleRate(output.getSampleRate());
+	}
 	workingBuffer.setTickCount(output.getTickCount());
 	workingBuffer.setDeviceID(output.getDeviceID());
 	
@@ -128,6 +133,10 @@ void ofxNDIReceiverSoundObject::setup(const std::string& name_or_url, const std:
 //--------------------------------------------------------------------------
 void ofxNDIReceiverSoundObject::audioOut(ofSoundBuffer &output) {
 	if(isConnected()){
+		if(numChannels == 0) {
+			numChannels = output.getNumChannels();
+		}
+
 		if(bAudioNeedsSetup){
 			bAudioNeedsSetup = false;
 			audio_.setup(receiver_);
@@ -135,32 +144,27 @@ void ofxNDIReceiverSoundObject::audioOut(ofSoundBuffer &output) {
 			audio_.setNumChannels(numChannels);
 			audio_.setNumSamples(output.getNumFrames());
 		}
-		if(numChannels == 0) {
-			numChannels = output.getNumChannels();
-		}
 		
-		if(numChannels != output.getNumChannels() ||
-		   output.getNumChannels() != workingBuffer.getNumChannels() ||
-		   numChannels != workingBuffer.getNumChannels()
-		   ){
+		if(numChannels != workingBuffer.getNumChannels() ||
+		   workingBuffer.getNumFrames() != output.getNumFrames()||
+		   workingBuffer.getSampleRate() != output.getSampleRate()){
 			
 			workingBuffer.allocate(output.getNumFrames(), numChannels);
 			workingBuffer.setSampleRate(output.getSampleRate());
-			workingBuffer.setTickCount(output.getTickCount());
-			workingBuffer.setDeviceID(output.getDeviceID());
+		}
+		workingBuffer.setTickCount(output.getTickCount());
+		workingBuffer.setDeviceID(output.getDeviceID());
+		
+		
+		audio_.update();
+		if(audio_.isFrameNew()) {
+			audio_.decodeTo(workingBuffer);
+			workingBuffer.copyTo(output);
+		}else{
+			output.set(0);
 		}
 		
-		if(receiver_.isConnected()) {
-			audio_.update();
-			if(audio_.isFrameNew()) {
-				audio_.decodeTo(workingBuffer);
-				workingBuffer.copyTo(output);
-			}else{
-				output.set(0);
-			}
-		}
-	}else
-	{
+	}else{
 		// if the receiver_ object is not setup just place silence in the out buffer
 		output.set(0);
 	}
