@@ -14,7 +14,7 @@ void ofApp::setup(){
 	
 	ofSoundStreamSettings soundSettings;
 	soundSettings.numInputChannels = 0;
-	soundSettings.numOutputChannels = 2;
+	soundSettings.numOutputChannels = 1;
 	soundSettings.sampleRate =48000;
 	soundSettings.bufferSize = 256;
 	soundSettings.numBuffers = 1;
@@ -35,7 +35,7 @@ void ofApp::setup(){
 	/// If a blank string is passed it will connect to the first available source
 	receiver.setup("ofxSoundObject NDI Sender", "ofx");
 	
-	
+
 	/// the receiver.setup(...) function can receive more parameters.
 	//
 	//		receiver.setup(
@@ -153,7 +153,7 @@ void ofApp::draw(){
 		ofSetColor(255);
 		ofDrawBitmapString(helpText,helpTextRect.x + 20,20);
 	}
-	
+	ofDrawBitmapStringHighlight(receiver.getMetadata(), wave.x + 10, wave.y + 20);
 	
 }
 //--------------------------------------------------------------

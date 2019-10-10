@@ -14,8 +14,8 @@ void ofApp::setup(){
 	auto inDevices = ofxSoundUtils::getInputSoundDevices();
 	
 	ofSoundStreamSettings soundSettings;
-	soundSettings.numInputChannels = 2;
-	soundSettings.numOutputChannels = 2;
+	soundSettings.numInputChannels = 1;
+	soundSettings.numOutputChannels = 1;
 	soundSettings.sampleRate = 48000;
 	soundSettings.bufferSize = 256;
 	/// IMPORTANT!
@@ -57,7 +57,7 @@ void ofApp::setup(){
 	/// The waveform can have a grid, in this case we are going to set it to the size of the buffers received.
 	/// This is useful for visually checking what we are sending in each buffer.
 	waveCircular.setGridSpacingByNumSamples(soundSettings.bufferSize);
-	
+	wave.setGridSpacingByNumSamples(1);
 	
 	
 	
@@ -106,10 +106,10 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-//	if(inputIndex == INPUT_SINE_WAVE ){
-//		sinGen.freq = ofMap(ofGetMouseX(), 0, ofGetWidth(), 20, 20000);
-//		sinGen.amplitude = ofMap(ofGetMouseY(), 0, ofGetWidth(), 0, 1);
-//	}
+	// just send some metadata along with the audio data of NDI
+	sender.setMetadata("current frame: " + ofToString(ofGetFrameNum()));
+	
+	
 }
 
 //--------------------------------------------------------------
