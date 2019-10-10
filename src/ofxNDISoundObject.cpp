@@ -12,6 +12,8 @@
 //--------------------------------------------------------------------------
 ofxNDISenderSoundObject::ofxNDISenderSoundObject():ofxSoundObject(OFX_SOUND_OBJECT_PROCESSOR){
 	bMute = true;
+	numChannels = 0;
+	metadata = "";
 }
 //--------------------------------------------------------------------------
 void ofxNDISenderSoundObject::setup(const std::string& name, const std::string & group){
@@ -58,7 +60,8 @@ void ofxNDISenderSoundObject::audioOut(ofSoundBuffer &output) {
 		inputObject->audioOut(workingBuffer);
 	}
 	if(sender_.isSetup()){
-		audio_.send(workingBuffer);
+		audio_.send(workingBuffer, metadata );
+		metadata = "";
 	}
 	if(bMute){
 		output.set(0);
@@ -66,11 +69,20 @@ void ofxNDISenderSoundObject::audioOut(ofSoundBuffer &output) {
 		workingBuffer.copyTo(output);
 	}
 }
+//--------------------------------------------------------------------------
+void ofxNDISenderSoundObject::setMetadata(const std::string& metadata){
+	std::lock_guard<std::mutex> mtx(metadataMutex);
+	this->metadata = metadata;
+}
 
 
 //--------------------------------------------------------------------------
 //---------- NDI RECEIVER
 //--------------------------------------------------------------------------
+ofxNDIReceiverSoundObject::ofxNDIReceiverSoundObject():ofxSoundObject(OFX_SOUND_OBJECT_SOURCE){
+	numChannels = 0;
+	metadata ="";
+}
 
 ofxNDI::Source ofxNDIReceiverSoundObject::findSource(const std::string& name_or_url, const std::string &group,uint32_t waittime_ms,ofxNDI::Location location, const std::vector<std::string> extra_ips){
 	
@@ -159,6 +171,12 @@ void ofxNDIReceiverSoundObject::audioOut(ofSoundBuffer &output) {
 		audio_.update();
 		if(audio_.isFrameNew()) {
 			audio_.decodeTo(workingBuffer);
+			if(audio_.getFrame().p_metadata != NULL){
+				metadata = std::string(audio_.getFrame().p_metadata);
+			}else{
+				metadata = "";
+			}
+		
 			workingBuffer.copyTo(output);
 		}else{
 			output.set(0);
@@ -205,6 +223,14 @@ ofxNDIRecvAudioFrameSync& ofxNDIReceiverSoundObject::getOfxNDIAudioFrame(){
 const ofxNDIRecvAudioFrameSync& ofxNDIReceiverSoundObject::getOfxNDIAudioFrame() const{
 	return audio_;
 }
-
-
+//--------------------------------------------------------------------------
+bool ofxNDIReceiverSoundObject::hasMetadata(){
+	std::lock_guard<std::mutex> mtx(metadataMutex);
+	return metadata != "";
+}
+//--------------------------------------------------------------------------
+const std::string& ofxNDIReceiverSoundObject::getMetadata(){
+	std::lock_guard<std::mutex> mtx(metadataMutex);
+	return metadata;
+}
 

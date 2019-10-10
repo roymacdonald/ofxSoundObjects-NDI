@@ -8,7 +8,7 @@
 #pragma once
 
 #include "ofxSoundObject.h"
-#include <atomic>
+#include <mutex>
 #include "ofxNDISender.h"
 #include "ofxNDISendStream.h"
 #include "ofxNDIReceiver.h"
@@ -30,6 +30,7 @@ public:
 	
 	
 	virtual void audioOut(ofSoundBuffer &output) override;
+	void setMetadata(const std::string& metadata);
 	
 private:
 
@@ -38,8 +39,12 @@ private:
 
 	std::atomic<bool> bMute;
 	
-	size_t numChannels = 0;
+	std::atomic<size_t> numChannels;
 	ofSoundBuffer workingBuffer;
+	
+	
+	std::string metadata;
+	std::mutex metadataMutex;
 };
 
 
@@ -47,7 +52,7 @@ private:
 class ofxNDIReceiverSoundObject : public ofxSoundObject{
 
 public:
-	ofxNDIReceiverSoundObject():ofxSoundObject(OFX_SOUND_OBJECT_SOURCE){}
+	ofxNDIReceiverSoundObject();
 	
 	static ofxNDI::Source findSource(const std::string& name_or_url,
 	const std::string &group="",
@@ -90,6 +95,12 @@ public:
 		  ofxNDIRecvAudioFrameSync& getOfxNDIAudioFrame();
 	const ofxNDIRecvAudioFrameSync& getOfxNDIAudioFrame() const;
 	
+	
+	
+	bool hasMetadata();
+	
+	const std::string& getMetadata();
+	
 private:
 	ofxNDIReceiver receiver_;
 	ofxNDIRecvAudioFrameSync audio_;
@@ -97,9 +108,13 @@ private:
 	ofxNDI::Source source;
 	bool bAudioNeedsSetup = false;
 
-	size_t numChannels = 0;
+	std::atomic<size_t> numChannels;
 	
 	ofSoundBuffer workingBuffer;
+	
+	
+	std::string metadata;
+	std::mutex metadataMutex;
 	
 };
 
