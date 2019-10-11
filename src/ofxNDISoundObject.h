@@ -46,7 +46,73 @@ private:
 	std::string metadata;
 	std::mutex metadataMutex;
 };
+enum ofxNDISoundQuality{
+	HIGH = 0,
+	LOW
+};
+//--------------------------------------------------------------------------
+class ofxNDIReceiverSettings{
+public:
 
+	
+	ofxNDIReceiverSettings(){}
+	ofxNDIReceiverSettings(const std::string& _sourceName,
+						   const std::string& _sourceUrl,
+						   const std::string& _receiverName,
+						   const std::string& _group="",
+						   uint32_t _waittime_ms = 1000,
+						   ofxNDI::Location _location = ofxNDI::Location::BOTH):
+	sourceName(_sourceName),
+	sourceUrl(_sourceUrl),
+	receiverName(_receiverName),
+	group(_group),
+	waittime_ms(_waittime_ms),
+	location(_location){}
+	
+	
+	std::string receiverName, sourceName, sourceUrl;
+	std::string group="";
+	uint32_t waittime_ms = 1000;
+	ofxNDI::Location location = ofxNDI::Location::BOTH;
+	ofxNDISoundQuality quality = ofxNDISoundQuality::HIGH;
+	
+	bool isSourceEmpty(){
+		return sourceName.empty() && sourceUrl.empty();
+	}
+	
+	std::pair<std::string, int> getSourceIpAndPort(){
+		
+		auto split = ofSplitString(sourceUrl, ":");
+		std::string ip = "";
+		int port = -1;
+		if(split.size()){
+			auto ip = split[0];
+			if(split.size() > 1){
+				port = ofToInt(split[1]);
+			}
+		}
+		return {ip, port};
+	}
+
+	operator ofxNDI::Recv::Receiver::Settings() const {
+		ofxNDI::Recv::Receiver::Settings s;
+				
+		s.bandwidth = ( quality == ofxNDISoundQuality::HIGH )? NDIlib_recv_bandwidth_audio_only : NDIlib_recv_bandwidth_lowest ;
+		s.name = receiverName;
+		
+		return s;
+	}
+	operator ofxNDI::Source() const {
+		ofxNDI::Source s;
+		s.p_ndi_name = sourceName;
+		s.p_url_address = sourceUrl;
+		return s;
+	}
+	
+	
+	
+//	std::vector<std::string> extra_ips;
+};
 
 //--------------------------------------------------------------------------
 class ofxNDIReceiverSoundObject : public ofxSoundObject{
@@ -54,12 +120,29 @@ class ofxNDIReceiverSoundObject : public ofxSoundObject{
 public:
 	ofxNDIReceiverSoundObject();
 	
-	static ofxNDI::Source findSource(const std::string& name_or_url,
-	const std::string &group="",
-	uint32_t waittime_ms=1000,
-	ofxNDI::Location location= ofxNDI::Location::BOTH,
-	const std::vector<std::string> extra_ips={});
+	
+	static ofxNDI::Source findSourceByName(const std::string& name,
+									 const std::string &group="",
+									 uint32_t waittime_ms=1000,
+									 ofxNDI::Location location= ofxNDI::Location::BOTH,
+									 const std::vector<std::string>& extra_ips={});
 
+	static ofxNDI::Source findSourceByIpAndPort(const std::string& ip,
+										  const int & port = -1,
+										  const std::string &group="",
+										  uint32_t waittime_ms=1000,
+										  ofxNDI::Location location= ofxNDI::Location::BOTH,
+										  const std::vector<std::string>& extra_ips={});
+
+	
+	static ofxNDI::Source findSourceByUrl(const std::string& url,
+									 const std::string &group="",
+									 uint32_t waittime_ms=1000,
+									 ofxNDI::Location location= ofxNDI::Location::BOTH,
+									 const std::vector<std::string>& extra_ips={});
+
+	
+	
 	
 	/// The following setup functions all receive as last parameter the bandwith setting. You can choose any of the following values.
 	////
@@ -69,14 +152,16 @@ public:
 	///	NDIlib_recv_bandwidth_highest        // Receive metadata, audio, video at full resolution.
 
 	
-	void setup(int sourceIndex = 0, std::string receiverName="", NDIlib_recv_bandwidth_e bandwidth=NDIlib_recv_bandwidth_highest);
 	
+	bool setup(const ofxNDIReceiverSettings& settings);
 	
-	void setup(const std::string& name_or_url,
-			   const std::string &group="", std::string receiverName="", NDIlib_recv_bandwidth_e bandwidth = NDIlib_recv_bandwidth_highest);
+	bool setupBySourceIpAndPort(const std::string& ip, const int & port = -1, std::string receiverName="", 	ofxNDISoundQuality quality = ofxNDISoundQuality::HIGH);
 	
-	void setup(const ofxNDI::Source &source, std::string receiverName="", NDIlib_recv_bandwidth_e bandwidth = NDIlib_recv_bandwidth_highest);
+	bool setupBySourceUrl(const std::string & sourceUrl, std::string receiverName="", 	ofxNDISoundQuality quality = ofxNDISoundQuality::HIGH);
 	
+	bool setupBySourceName(const std::string &sourceName, std::string receiverName="", ofxNDISoundQuality quality = ofxNDISoundQuality::HIGH);
+	
+	bool reconnect();
 	
 	const std::string& getSourceName();
 	const std::string& getSourceUrl();
@@ -102,10 +187,19 @@ public:
 	const std::string& getMetadata();
 	
 private:
+	
+	ofxNDIReceiverSettings settings;
+	
 	ofxNDIReceiver receiver_;
 	ofxNDIRecvAudioFrameSync audio_;
+
+//	ofxNDI::Recv::Receiver::Settings receiverSettings;
+//	std::string receiverName;
+//	NDIlib_recv_bandwidth_e bandwidth;
+//	
 	
 	ofxNDI::Source source;
+	std::string group;
 	bool bAudioNeedsSetup = false;
 
 	std::atomic<size_t> numChannels;
