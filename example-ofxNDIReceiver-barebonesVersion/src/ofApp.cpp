@@ -30,34 +30,27 @@ void ofApp::setup(){
 	
 	
 	/// SUPER IMPORTANT!
-	/// In the following line put the NDI source name or url that you want to connect to.
+	/// SET THE RECEIVER SETTINGS
 	/// Look at the console as the available sources are printed there.
+	/// you can either set the name or url. If the source is not found by name, then it will be searched by url.
 	/// Note: log level needs to be verbose in order to see this in the console. 	ofSetLogLevel(OF_LOG_VERBOSE);
-	/// If a blank string is passed it will connect to the first available source
-	receiver.setup("ofxSoundObject NDI Sender", "ofx");
 	
-	/// the receiver.setup(...) function can receive more parameters.
-//	
-//		receiver.setup(
-//					   "ofxSoundObject NDI Sender",   // the name of the sender from which you want to receive audio.
-//		               "ofx",                         // the name of the group at which the sender is published. Default is empty
-//					   "ofxSoundObject NDI Receiver", // the name of this receiver. It is defaulted to empty.
-//					   NDIlib_recv_bandwidth_highest  // the bandwitdh setting for the receiver. It can take any value listed below.
-//		               );
+	ofxNDIReceiverSettings settings;
+	//	settings.receiverName="";
+	settings.sourceName="ofxSoundObject NDI Sender";
+	//	settings.sourceUrl=""; //could be an
+	settings.group="ofx";
+	//	settings.waittime_ms = 1000;
+	//	settings.location = ofxNDI::Location::BOTH;
+	//	settings.quality = ofxNDISoundQuality::HIGH;
 	
-	/// Bandwidth setting values
-	///	NDIlib_recv_bandwidth_metadata_only  // Receive metadata.
-	///	NDIlib_recv_bandwidth_audio_only     // Receive metadata, audio.
-	///	NDIlib_recv_bandwidth_lowest         // Receive metadata, audio, video at a lower bandwidth and resolution.
-	///	NDIlib_recv_bandwidth_highest        // Receive metadata, audio, video at full resolution.
-	
-	
+	receiver.setup(settings);
 	
 	
 
 	/// You can set the number of audio channels that the NDI receiver should expect. This allows you to have a larger channel count that what your soundstream actually supports.
 	/// If you dont set this you'll simply get the amount of channels that your sound stream has.
-	receiver.setNumChannels(2);
+	receiver.setNumChannels(1);
 	
 	
 	/// Connect the receiver to the output. Because of the design of ofxSoundObjects the receiver needs to be connected to a signal chain which is connected to soundstream.
