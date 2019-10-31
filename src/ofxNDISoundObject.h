@@ -9,6 +9,7 @@
 
 #include "ofxSoundObject.h"
 #include <mutex>
+#include <future>
 #include "ofxNDISender.h"
 #include "ofxNDISendStream.h"
 #include "ofxNDIReceiver.h"
@@ -104,6 +105,8 @@ public:
 	bool setupBySourceName(const std::string &sourceName, const ofxNDIReceiverSettings& settings = ofxNDIReceiverSettings());
 
 	bool reconnect();
+	void asyncReconnect();
+	
 	
 	const std::string& getSourceName();
 	const std::string& getSourceUrl();
@@ -146,6 +149,8 @@ private:
 	
 	std::string metadata = "";
 	std::mutex metadataMutex;
+	
+	std::future<bool> reconnectFuture;
 	
 };
 

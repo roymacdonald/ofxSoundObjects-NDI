@@ -237,7 +237,7 @@ bool ofxNDIReceiverSoundObject::setup(const ofxNDIReceiverSettings& settings){
 		
 		if(bFound && receiver_.setup(this->settings, this->settings)){
 			bAudioNeedsSetup = true;
-			std::cout << settings << std::endl;
+//			std::cout << settings << std::endl; 
 			return true;
 		}else{
 			ofLogWarning("ofxNDIReceiverSoundObject::setup") << "Unable to setup. Source seems to be unavailable. try calling reconnect() later.";
@@ -258,6 +258,19 @@ bool ofxNDIReceiverSoundObject::reconnect(){
 	
 	ofLogVerbose("ofxNDIReceiverSoundObject::reconnect") << (reconnected?"Success.":"not possible.") << " Receiver Name: " << this->settings.receiverName << " source name: " << this->settings.sourceName << " source url: " << this->settings.sourceUrl;
 	return reconnected;
+	
+}
+bool asyncReconnectHelper(ofxNDIReceiverSoundObject* receiver, ofxNDIReceiverSettings settings){
+	if(!receiver) return false;
+
+	
+	bool reconnected = receiver->setup(settings);
+	
+	ofLogVerbose("ofxNDIReceiverSoundObject::reconnect") << (reconnected?"Success.":"not possible.") << " Receiver Name: " << settings.receiverName << " source name: " << settings.sourceName << " source url: " << settings.sourceUrl;
+	return reconnected;
+}
+void ofxNDIReceiverSoundObject::asyncReconnect(){
+	reconnectFuture= std::async(std::launch::async,asyncReconnectHelper, this, getSettings());
 	
 }
 //--------------------------------------------------------------------------
