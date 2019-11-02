@@ -84,7 +84,8 @@ std::pair<std::string, int> getIpAndPort(const std::string&url){
 	std::string ip = "";
 	int port = -1;
 	if(split.size()){
-		auto ip = split[0];
+		//        auto ip = split[0];
+		ip = split[0];
 		if(split.size() > 1){
 			port = ofToInt(split[1]);
 		}
@@ -99,11 +100,11 @@ std::pair<std::string, int> getIpAndPort(const std::string&url){
 //--------------------------------------------------------------------------
 
 ofxNDIReceiverSettings::ofxNDIReceiverSettings(const std::string& _sourceName,
-					   const std::string& _sourceUrl,
-					   const std::string& _receiverName,
-					   const std::string& _group,
-					   uint32_t _waittime_ms,
-					   ofxNDI::Location _location):
+											   const std::string& _sourceUrl,
+											   const std::string& _receiverName,
+											   const std::string& _group,
+											   uint32_t _waittime_ms,
+											   ofxNDI::Location _location):
 sourceName(_sourceName),
 sourceUrl(_sourceUrl),
 receiverName(_receiverName),
@@ -149,7 +150,7 @@ ofxNDIReceiverSoundObject::ofxNDIReceiverSoundObject():ofxSoundObject(OFX_SOUND_
 }
 //--------------------------------------------------------------------------
 bool findSource( std::function<bool(const ofxNDI::Source & s)> func, ofxNDIReceiverSettings& settings, const std::vector<std::string>& extra_ips, const std::string& notFoundMsg){
-	//						const std::string &group,uint32_t waittime_ms,ofxNDI::Location location, const std::vector<std::string>& extra_ips){
+	//                        const std::string &group,uint32_t waittime_ms,ofxNDI::Location location, const std::vector<std::string>& extra_ips){
 	
 	auto sources = ofxNDI::listSources(settings.waittime_ms, settings.location, settings.group, extra_ips);
 	
@@ -166,11 +167,11 @@ bool findSource( std::function<bool(const ofxNDI::Source & s)> func, ofxNDIRecei
 }
 //--------------------------------------------------------------------------
 bool ofxNDIReceiverSoundObject::findSourceByName(ofxNDIReceiverSettings& settings, const std::vector<std::string>& extra_ips){
-// std::string& name, const std::string &group,uint32_t waittime_ms,ofxNDI::Location location, const std::vector<std::string>& extra_ips){
+	// std::string& name, const std::string &group,uint32_t waittime_ms,ofxNDI::Location location, const std::vector<std::string>& extra_ips){
 	if(settings.sourceName != "") {
-		 return findSource([&settings](const ofxNDI::Source &s) {
-							  return ofIsStringInString(s.p_ndi_name, settings.sourceName);
-						  },
+		return findSource([&settings](const ofxNDI::Source &s) {
+			return ofIsStringInString(s.p_ndi_name, settings.sourceName);
+		},
 						  settings, extra_ips, "with name: " +  settings.sourceName);
 		
 	}
@@ -230,14 +231,16 @@ bool ofxNDIReceiverSoundObject::setup(const ofxNDIReceiverSettings& settings){
 	this->settings = settings;
 	if(!this->settings.isSourceEmpty()){
 		bAudioNeedsSetup =false;
-		bool bFound = findSourceByName(this->settings);
+		bool bFound = findSourceByIpAndPort(this->settings);
+		if(!bFound){
+			bFound = findSourceByName(this->settings);
+		}
 		if(!bFound){
 			bFound = findSourceByUrl(this->settings);
 		}
 		
 		if(bFound && receiver_.setup(this->settings, this->settings)){
 			bAudioNeedsSetup = true;
-//			std::cout << settings << std::endl; 
 			return true;
 		}else{
 			ofLogWarning("ofxNDIReceiverSoundObject::setup") << "Unable to setup. Source seems to be unavailable. try calling reconnect() later.";
@@ -253,7 +256,7 @@ bool ofxNDIReceiverSoundObject::reconnect(){
 		ofLogWarning("ofxNDIReceiverSoundObject::reconnect") << "already connected!";
 		return true;
 	}
-//	ofLogVerbose("ofxNDIReceiverSoundObject::reconnect") << "attempting reconnect..";
+	//	ofLogVerbose("ofxNDIReceiverSoundObject::reconnect") << "attempting reconnect..";
 	bool reconnected = setup(this->settings);
 	
 	ofLogVerbose("ofxNDIReceiverSoundObject::reconnect") << (reconnected?"Success.":"not possible.") << " Receiver Name: " << this->settings.receiverName << " source name: " << this->settings.sourceName << " source url: " << this->settings.sourceUrl;
@@ -262,7 +265,7 @@ bool ofxNDIReceiverSoundObject::reconnect(){
 }
 bool asyncReconnectHelper(ofxNDIReceiverSoundObject* receiver, ofxNDIReceiverSettings settings){
 	if(!receiver) return false;
-
+	
 	
 	bool reconnected = receiver->setup(settings);
 	
@@ -279,7 +282,7 @@ void ofxNDIReceiverSoundObject::audioOut(ofSoundBuffer &output) {
 		if(numChannels == 0) {
 			numChannels = output.getNumChannels();
 		}
-
+		
 		if(bAudioNeedsSetup){
 			bAudioNeedsSetup = false;
 			audio_.setup(receiver_);
@@ -307,7 +310,7 @@ void ofxNDIReceiverSoundObject::audioOut(ofSoundBuffer &output) {
 			}else{
 				metadata = "";
 			}
-		
+			
 			workingBuffer.copyTo(output);
 		}else{
 			output.set(0);
@@ -374,11 +377,11 @@ const ofxNDIReceiverSettings& ofxNDIReceiverSoundObject::getSettings() const{
 }
 //--------------------------------------------------------------------------
 std::ostream& operator << (std::ostream& os, const ofxNDIReceiverSettings& ss) {
-	os << "receiverName " << ss.receiverName 
-	<< " sourceName " << ss.sourceName 
-	<< " sourceUrl " << ss.sourceUrl 
-	<< " group " << ss.group 
-	<< " waittime_ms " << ss.waittime_ms 
+	os << "receiverName " << ss.receiverName
+	<< " sourceName " << ss.sourceName
+	<< " sourceUrl " << ss.sourceUrl
+	<< " group " << ss.group
+	<< " waittime_ms " << ss.waittime_ms
 	<< " location ";
 	switch (ss.location) {
 		case ofxNDI::Location::BOTH: os << "BOTH" ;  break;
@@ -387,7 +390,7 @@ std::ostream& operator << (std::ostream& os, const ofxNDIReceiverSettings& ss) {
 	}
 	
 	os << " quality " << ((ss.quality == ofxNDISoundQuality::HIGH )?"HIGH":"LOW");
-	 
+	
 	
 	
 	return os;
